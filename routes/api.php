@@ -20,4 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/posts/last-post', [\App\Http\Controllers\API\PostController::class, 'getLastPost']);
 Route::apiResource('posts', \App\Http\Controllers\API\PostController::class);
+Route::group(['namespace' => 'API', 'prefix' => 'posts/images'], function ()
+{
+    Route::post('/', [\App\Http\Controllers\API\ImageController::class, 'store']);
+});
 

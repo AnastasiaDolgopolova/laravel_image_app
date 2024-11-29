@@ -4,6 +4,9 @@
         <div ref="dropzone" class="btn d-block p-5 bg-dark text-center text-light mt-3">
             Upload
         </div>
+        <div class="mt-3">
+            <vue-editor useCustomImageHandler @image-added="handleImageAdded" v-model="content"></vue-editor>
+        </div>
         <input @click.prevent="store" type="submit" class="btn btn-primary mt-3" value="Add">
     </div>
 
@@ -20,6 +23,7 @@
 
 <script>
 import {Dropzone} from "dropzone";
+import { VueEditor } from "vue3-editor";
 export default {
     name: "Index",
 
@@ -27,8 +31,13 @@ export default {
         return {
             dropzone: null,
             title: '',
-            post: []
+            post: [],
+            content: ''
         }
+    },
+
+    components: {
+        VueEditor,
     },
 
     mounted() {
@@ -64,6 +73,21 @@ export default {
                 .then( res => {
                     this.post = res.data.data;
                 })
+        },
+
+        handleImageAdded(file, Editor, cursorLocation, resetUploader) {
+            const formData = new FormData();
+            formData.append("image", file);
+
+            axios.post('api/posts/images', formData)
+                .then(result => {
+                    const url = result.data.url; // Get url from response
+                    Editor.insertEmbed(cursorLocation, "image", url);
+                    resetUploader();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
 
