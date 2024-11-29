@@ -11,6 +11,7 @@
         <div v-if="post">
             <h4>{{ post.title }}</h4>
             <div v-for="image in post.images" class="mb-3">
+                <img :src="image.preview_url" class="mb-3">
                 <img :src="image.url">
             </div>
         </div>
@@ -36,7 +37,7 @@ export default {
             autoProcessQueue: false,
             addRemoveLinks: true
         })
-        this.getPosts()
+        this.getLastPost()
     },
 
     methods: {
@@ -53,13 +54,13 @@ export default {
            // console.log(this.dropzone.getAcceptedFiles());
                 .then(res => {
                     this.title = '';
-                    console.log(res);
+                    this.getLastPost();
                 })
                 .catch(error => console.log(error));
         },
 
-        getPosts() {
-            axios.get('/api/posts')
+        getLastPost() {
+            axios.get('/api/posts/last-post')
                 .then( res => {
                     this.post = res.data.data;
                 })
