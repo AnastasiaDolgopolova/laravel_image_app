@@ -6,6 +6,15 @@
         </div>
         <input @click.prevent="store" type="submit" class="btn btn-primary mt-3" value="Add">
     </div>
+
+    <div class="mt-5">
+        <div v-if="post">
+            <h4>{{ post.title }}</h4>
+            <div v-for="image in post.images" class="mb-3">
+                <img :src="image.url">
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -17,6 +26,7 @@ export default {
         return {
             dropzone: null,
             title: '',
+            post: []
         }
     },
 
@@ -26,6 +36,7 @@ export default {
             autoProcessQueue: false,
             addRemoveLinks: true
         })
+        this.getPosts()
     },
 
     methods: {
@@ -45,6 +56,13 @@ export default {
                     console.log(res);
                 })
                 .catch(error => console.log(error));
+        },
+
+        getPosts() {
+            axios.get('/api/posts')
+                .then( res => {
+                    this.post = res.data.data;
+                })
         }
     }
 
